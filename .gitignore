@@ -22,3 +22,5 @@ Cargo.lock
 
 # Test outputs
 *.log
+
+.claude/*.local.md
