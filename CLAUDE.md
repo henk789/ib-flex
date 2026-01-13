@@ -76,6 +76,17 @@ ib-flex/
 
 ## Development Workflow
 
+### ⚠️ CRITICAL: Pre-Commit Requirements ⚠️
+
+**ALWAYS run these commands before EVERY commit:**
+```bash
+cargo fmt && cargo clippy -- -D warnings
+```
+
+**No exceptions.** Fix all clippy warnings before committing. This has been missed in multiple PRs and must be enforced strictly.
+
+---
+
 ### Phase 0: Project Setup (Current)
 - [x] Create project structure
 - [x] Initialize git repository
@@ -187,6 +198,24 @@ pub fn parse_activity_flex(xml: &str) -> Result<ActivityFlexStatement>
 - Patch: Bug fixes only
 - Minor: New features, backward compatible
 - Major: Breaking changes
+
+### 6. Code Quality Before Every Commit
+**Rule**: ALWAYS run both `cargo fmt` and `cargo clippy -- -D warnings` before committing code.
+
+**Why**: Ensures consistent code style and catches common issues before they reach version control.
+
+**CRITICAL REQUIREMENT**:
+- Run `cargo fmt` to format all code
+- Run `cargo clippy -- -D warnings` to catch all clippy warnings
+- Fix all clippy warnings before committing
+- These checks MUST pass before creating commits or PRs
+- No exceptions - this has been missed in multiple PRs and must not happen again
+
+**Enforcement**:
+```bash
+# Before EVERY commit, run:
+cargo fmt && cargo clippy -- -D warnings
+```
 
 ---
 
@@ -584,12 +613,18 @@ cargo bench
 ```
 
 ### Checking Code Quality
+
+**CRITICAL: Run these BEFORE EVERY commit!**
+
 ```bash
-# Format code
+# Format code (REQUIRED before commit)
 cargo fmt
 
-# Lint
+# Lint (REQUIRED before commit - must have zero warnings)
 cargo clippy -- -D warnings
+
+# Recommended: Run both together before committing
+cargo fmt && cargo clippy -- -D warnings
 
 # Check docs
 cargo doc --no-deps --open
@@ -602,9 +637,10 @@ cargo doc --no-deps --open
 Before publishing to crates.io:
 
 ### Pre-Release
+- [ ] **Run `cargo fmt && cargo clippy -- -D warnings`** (MUST be first!)
 - [ ] All tests pass (`cargo test`)
-- [ ] Clippy clean (`cargo clippy -- -D warnings`)
-- [ ] Formatted (`cargo fmt --check`)
+- [ ] Clippy clean with zero warnings (`cargo clippy -- -D warnings`)
+- [ ] Code formatted (`cargo fmt --check`)
 - [ ] Documentation complete (`cargo doc --no-deps`)
 - [ ] Examples run successfully
 - [ ] CHANGELOG.md updated
@@ -673,10 +709,12 @@ This is an open-source project. Contributions welcome!
 ### Pull Requests
 1. Fork and create branch
 2. Add tests for new features
-3. Ensure `cargo test` and `cargo clippy` pass
-4. Run `cargo fmt`
+3. **CRITICAL**: Run `cargo fmt && cargo clippy -- -D warnings` and fix all issues
+4. Ensure all tests pass (`cargo test`)
 5. Update CHANGELOG.md
 6. Submit PR with clear description
+
+**Before submitting PR**: All code must be formatted and pass clippy with zero warnings.
 
 ---
 
