@@ -18,7 +18,7 @@ Fast, type-safe parser for Interactive Brokers FLEX (Flex Web Query) XML stateme
 - 📦 **Comprehensive coverage** of Activity FLEX statements
 - 🛡️ **Well-tested**
 - 🎯 **Edge case handling** for warrants, T-Bills, CFDs, fractional shares, cancelled trades
-- - 🔍 **Automatic detection** of statement types and schema versions
+- 🔍 **Automatic detection** of statement types and schema versions
 - 🌐 **Optional API client** for programmatic FLEX statement retrieval
 
 ## Installation
