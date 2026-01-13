@@ -1,0 +1,5 @@
+{
+  "enabledPlugins": {
+    "rust-analyzer@claude-code-lsps": true
+  }
+}
