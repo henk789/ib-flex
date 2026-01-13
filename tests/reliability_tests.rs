@@ -8,7 +8,6 @@
 
 use ib_flex::parse_activity_flex;
 use proptest::prelude::*;
-use rand::Rng;
 
 // ===== PROPERTY-BASED TESTS =====
 
