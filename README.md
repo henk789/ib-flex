@@ -4,22 +4,17 @@
 [![docs.rs](https://docs.rs/ib-flex/badge.svg)](https://docs.rs/ib-flex)
 [![License](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE-MIT)
 
-Pure Rust parser for Interactive Brokers FLEX XML statements with comprehensive type safety and edge case coverage.
-
-Fast, type-safe parser for Interactive Brokers FLEX (Flex Web Query) XML statements. Built with zero external dependencies beyond XML/serde, featuring 100+ enum variants, extended FLEX sections, comprehensive edge case handling, and excellent performance.
+Type-safe Rust parser for Interactive Brokers FLEX XML statements with comprehensive coverage and financial precision.
 
 ## Features
 
-- 🚀 **High performance** with quick-xml and serde (~6.5µs for minimal parsing)
-- 💰 **Financial precision** with rust_decimal for all monetary values (no floating point!)
-- 📅 **Correct datetime handling** with chrono
-- ✅ **Type-safe** with 15 enums covering 100+ variants
-- 🔧 **Zero dependencies** beyond XML/serde ecosystem
-- 📦 **Comprehensive coverage** of Activity FLEX statements
-- 🛡️ **Well-tested**
-- 🎯 **Edge case handling** for warrants, T-Bills, CFDs, fractional shares, cancelled trades
-- 🔍 **Automatic detection** of statement types and schema versions
-- 🌐 **Optional API client** for programmatic FLEX statement retrieval
+- **High performance** - Fast XML parsing with quick-xml and serde
+- **Financial precision** - rust_decimal for all monetary values (no floating point errors)
+- **Type-safe** - 15 enums with 100+ variants for comprehensive coverage
+- **Comprehensive** - Supports all major FLEX sections and 20 asset categories
+- **Well-tested** - Integration tests, property-based tests, edge case coverage
+- **Edge case handling** - Warrants, T-Bills, CFDs, fractional shares, cancelled trades
+- **Optional API client** - Fetch FLEX statements programmatically from IB
 
 ## Installation
 
@@ -68,6 +63,8 @@ Interactive Brokers FLEX queries must be configured in the IB Client Portal:
 
 **Important**: European date formats (`dd/MM/yyyy`) are NOT supported by the IB FLEX API.
 
+📘 **For comprehensive setup instructions**, see [FLEX_SETUP.md](FLEX_SETUP.md) which covers all 21 recommended sections, field selections, and configuration options.
+
 ## FLEX Web Service API Client (Optional)
 
 The `api-client` feature provides programmatic access to fetch FLEX statements directly from Interactive Brokers without manual downloads.
@@ -92,19 +89,20 @@ ib-flex = { version = "0.1", features = ["api-client"] }
 use ib_flex::api::FlexApiClient;
 use std::time::Duration;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create client with your token
     let client = FlexApiClient::new("YOUR_TOKEN");
 
     // Step 1: Send request with your query ID
-    let reference_code = client.send_request("123456")?;
+    let reference_code = client.send_request("123456").await?;
 
     // Step 2: Get statement with automatic retry
     let xml = client.get_statement_with_retry(
         &reference_code,
         10,                           // max retries
         Duration::from_secs(2)        // delay between retries
-    )?;
+    ).await?;
 
     // Step 3: Parse the statement
     let statement = ib_flex::parse_activity_flex(&xml)?;
@@ -205,10 +203,29 @@ cargo run --example filter_trades
 cargo run --example calculate_commissions
 ```
 
+### Historical Backfill Example
+5. **backfill_summary.rs** - Parse multi-statement FLEX XML and display comprehensive summary
+
+To use this example:
+1. Create a FLEX query with **Period: Last 180 Calendar Days** (or similar) in [IBKR Client Portal](https://portal.interactivebrokers.com) - see [FLEX_SETUP.md](FLEX_SETUP.md)
+2. Download the XML file manually or via API
+3. Run the summary:
+
+```bash
+cargo run --example backfill_summary -- path/to/your/backfill.xml
+```
+
+Output includes:
+- NAV over time with returns, high/low, drawdown
+- Trading activity by symbol with P&L attribution
+- Cash transaction breakdown (dividends, interest, fees)
+- Current positions from latest statement
+- Monthly returns table
+
 ### API Client Examples (requires `api-client` feature)
-4. **fetch_flex_statement.rs** - Complete API workflow with detailed output
-5. **api_simple_usage.rs** - Minimal API client usage
-6. **api_with_retry.rs** - API client with automatic retry logic
+6. **fetch_flex_statement.rs** - Complete API workflow with detailed output
+7. **api_simple_usage.rs** - Minimal API client usage
+8. **api_with_retry.rs** - API client with automatic retry logic
 
 Run API examples:
 ```bash
