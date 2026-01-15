@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.6] - 2026-01-15
 
-### Changed
-- Minor improvements and maintenance
+### Added
+- Enhanced type safety and derivative field consolidation for options and futures ([#9](https://github.com/clifton/ib-flex/pull/9))
 ## [0.1.5] - 2026-01-14
 
 ### Fixed

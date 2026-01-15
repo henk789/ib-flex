@@ -176,13 +176,17 @@ Memory efficient with approximately 200 bytes per trade. Parsing 10,000 trades u
 
 ## Type Safety
 
-All financial values use `rust_decimal::Decimal` for precise calculations without floating-point errors. The library includes 15 comprehensive enums with 100+ variants covering:
+All financial values use `rust_decimal::Decimal` for precise calculations without floating-point errors. The library includes comprehensive enums with 100+ variants covering:
 
 - **AssetCategory** (20 variants) - STK, OPT, FUT, CASH, BOND, BILL, WAR, CFD, etc.
-- **Reorg** (36 variants) - All corporate action types
-- **Code** (50+ variants) - Transaction classification codes
-- **CashAction** (13 variants) - Cash transaction types
+- **CorporateActionType** (36 variants) - All corporate action types (formerly Reorg)
+- **TransactionCode** (50+ variants) - Transaction classification codes (formerly Code)
+- **CashTransactionType** (13 variants) - Cash transaction types (formerly CashAction)
+- **DerivativeInfo** - Consolidated derivative metadata for options, futures, and warrants
 - **OrderType** (13 variants) - Market, limit, stop, etc.
+- **SecurityIdType** - CUSIP, ISIN, FIGI, SEDOL identifier types
+- **SubCategory** - ETF, ADR, REIT, Preferred, Common, and more
+- **LevelOfDetail** - Summary, Detail, Execution, Lot reporting granularity
 - **BuySell, OpenClose, PutCall, LongShort, TradeType, OptionAction, and more**
 
 ## Examples
