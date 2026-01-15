@@ -20,7 +20,6 @@ set -euo pipefail
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-readonly SCRIPT_VERSION="1.0.0"
 readonly DEFAULT_BRANCH="main"
 readonly CARGO_TOML="Cargo.toml"
 readonly CHANGELOG="CHANGELOG.md"
@@ -915,7 +914,7 @@ main() {
     parse_args "$@"
 
     echo ""
-    echo -e "${BOLD}ib-flex Release Script v$SCRIPT_VERSION${NC}"
+    echo -e "${BOLD}ib-flex Release Script${NC}"
     if $DRY_RUN; then
         echo -e "${YELLOW}(DRY RUN MODE - no changes will be made)${NC}"
     fi
