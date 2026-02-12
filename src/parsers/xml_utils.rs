@@ -1,8 +1,53 @@
 //! XML parsing utilities and custom deserializers
 
+use crate::types::common::TransactionCode;
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serializer};
+
+/// Deserialize a list of TransactionCode from a semicolon-separated string
+pub fn deserialize_transaction_codes<'de, D>(
+    deserializer: D,
+) -> Result<Option<Vec<TransactionCode>>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = Option::<String>::deserialize(deserializer)?;
+    match s.as_deref() {
+        None | Some("") => Ok(None),
+        Some(s) => {
+            let codes = s
+                .split(';')
+                .filter(|code| !code.is_empty())
+                .map(|code| {
+                    serde_plain::from_str::<TransactionCode>(code).map_err(serde::de::Error::custom)
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(Some(codes))
+        }
+    }
+}
+
+/// Serialize a list of TransactionCode to a semicolon-separated string
+pub fn serialize_transaction_codes<S>(
+    codes: &Option<Vec<TransactionCode>>,
+    serializer: S,
+) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let s = codes
+        .as_ref()
+        .map(|codes| {
+            codes
+                .iter()
+                .map(|c| serde_plain::to_string(c).unwrap())
+                .collect::<Vec<_>>()
+                .join(";")
+        })
+        .unwrap_or_default();
+    serializer.serialize_str(&s)
+}
 
 /// Parse a date string in either YYYY-MM-DD or YYYYMMDD format
 fn parse_flex_date(s: &str) -> Result<NaiveDate, chrono::ParseError> {

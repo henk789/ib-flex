@@ -98,7 +98,7 @@ pub struct FlexStatementsWrapper {
 ///         trade.symbol,
 ///         trade.buy_sell.as_ref().map(|b| format!("{:?}", b)).unwrap_or_default(),
 ///         trade.quantity.unwrap_or_default(),
-///         trade.price.unwrap_or_default()
+///         trade.trade_price.unwrap_or_default()
 ///     );
 /// }
 ///
@@ -470,7 +470,7 @@ pub struct CorporateActionsWrapper {
 ///
 ///     // Calculate total cost
 ///     let quantity = trade.quantity.unwrap_or_default();
-///     let price = trade.price.unwrap_or_default();
+///     let price = trade.trade_price.unwrap_or_default();
 ///     let cost = quantity * price;
 ///     println!("Cost: {}", cost);
 ///
@@ -734,9 +734,14 @@ pub struct Trade {
     #[serde(rename = "@whenReopened", default)]
     pub when_reopened: Option<String>,
 
-    /// Trade notes/codes (may contain wash sale indicator "W")
-    #[serde(rename = "@notes", default)]
-    pub notes: Option<String>,
+    /// Trade notes/codes (may contain multiple TransactionCode, e.g. Closing + WashSale)
+    #[serde(
+        rename = "@notes",
+        default,
+        deserialize_with = "crate::parsers::xml_utils::deserialize_transaction_codes",
+        serialize_with = "crate::parsers::xml_utils::serialize_transaction_codes"
+    )]
+    pub notes: Option<Vec<super::common::TransactionCode>>,
 
     // ==================== EXTENDED FIELDS ====================
     // Metadata, execution details, and less commonly used fields

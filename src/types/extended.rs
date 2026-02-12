@@ -1798,6 +1798,10 @@ pub struct Transfer {
         deserialize_with = "deserialize_optional_decimal"
     )]
     pub multiplier: Option<Decimal>,
+
+    /// Transaction code (e.g. Ca for cancelled)
+    #[serde(rename = "@code", default)]
+    pub code: Option<String>,
 }
 
 // =============================================================================

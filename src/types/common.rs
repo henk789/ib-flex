@@ -531,6 +531,9 @@ pub enum TransferType {
     /// Delivery vs payment
     DVP,
 
+    /// Direct registration
+    DRS,
+
     /// Unknown
     #[serde(other)]
     Unknown,
