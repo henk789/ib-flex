@@ -123,7 +123,7 @@ fn test_trade_confirms() {
     assert_eq!(confirm.trade_time.as_deref(), Some("09:30:00"));
     assert_eq!(confirm.symbol, "AAPL");
     assert_eq!(confirm.quantity, Decimal::from_str("100").unwrap());
-    assert_eq!(confirm.price, Decimal::from_str("150.00").unwrap());
+    assert_eq!(confirm.trade_price, Decimal::from_str("150.00").unwrap());
 }
 
 #[test]

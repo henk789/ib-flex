@@ -15,7 +15,7 @@
                settleDateTarget="2025-01-16"
                buySell="BUY"
                quantity="10000"
-               price="99.85"
+               tradePrice="99.85"
                proceeds="-9985.00"
                ibCommission="0.00"
                netCash="-9985.00"

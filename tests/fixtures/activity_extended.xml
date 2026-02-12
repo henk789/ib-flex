@@ -50,7 +50,7 @@
                 <TradeConfirm accountId="U1234567" execID="00012345.001"
                              orderID="12345" tradeDate="2025-01-15"
                              tradeTime="09:30:00" symbol="AAPL" assetCategory="STK"
-                             quantity="100" price="150.00" />
+                             quantity="100" tradePrice="150.00" />
             </TradeConfirms>
 
             <OptionEAE>

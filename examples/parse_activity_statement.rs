@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             trade.buy_sell,
             trade.quantity.unwrap_or_default(),
             trade.symbol,
-            trade.price.unwrap_or_default(),
+            trade.trade_price.unwrap_or_default(),
             trade.commission
         );
     }

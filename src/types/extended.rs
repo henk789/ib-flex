@@ -1004,9 +1004,9 @@ pub struct TradeConfirm {
     #[serde(rename = "@quantity")]
     pub quantity: Decimal,
 
-    /// Price
-    #[serde(rename = "@price")]
-    pub price: Decimal,
+    /// Trade price
+    #[serde(rename = "@tradePrice")]
+    pub trade_price: Decimal,
 
     /// Proceeds
     #[serde(

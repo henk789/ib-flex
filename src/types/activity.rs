@@ -616,11 +616,11 @@ pub struct Trade {
 
     /// Trade price per share/contract
     #[serde(
-        rename = "@price",
+        rename = "@tradePrice",
         default,
         deserialize_with = "deserialize_optional_decimal"
     )]
-    pub price: Option<Decimal>,
+    pub trade_price: Option<Decimal>,
 
     /// Trade proceeds (negative for buys, positive for sells)
     #[serde(
@@ -743,7 +743,7 @@ pub struct Trade {
 
     // --- Order/Execution IDs ---
     /// IB order ID (may be shared across multiple executions)
-    #[serde(rename = "@orderID", default)]
+    #[serde(rename = "@ibOrderID", default)]
     pub ib_order_id: Option<String>,
 
     /// Execution ID

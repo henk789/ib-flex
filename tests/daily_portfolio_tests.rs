@@ -144,7 +144,10 @@ fn test_trade_parsing() {
         .find(|t| matches!(t.buy_sell, Some(BuySell::Buy)) && t.symbol == "GOOGL")
         .unwrap();
     assert_eq!(buy_trade.quantity, Some(Decimal::from(100)));
-    assert_eq!(buy_trade.price, Some(Decimal::from_str("175.50").unwrap()));
+    assert_eq!(
+        buy_trade.trade_price,
+        Some(Decimal::from_str("175.50").unwrap())
+    );
     assert_eq!(
         buy_trade.proceeds,
         Some(Decimal::from_str("-17550.00").unwrap())

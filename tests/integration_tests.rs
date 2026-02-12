@@ -27,7 +27,7 @@ fn test_parse_trades() {
     assert_eq!(trade.asset_category, AssetCategory::Stock);
     assert_eq!(trade.buy_sell, Some(BuySell::Buy));
     assert_eq!(trade.quantity.unwrap().to_string(), "100");
-    assert_eq!(trade.price.unwrap().to_string(), "185.50");
+    assert_eq!(trade.trade_price.unwrap().to_string(), "185.50");
 }
 
 #[test]

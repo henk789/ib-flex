@@ -96,7 +96,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let Some(quantity) = trade.quantity {
             println!("  Quantity: {}", quantity);
         }
-        if let Some(price) = trade.price {
+        if let Some(price) = trade.trade_price {
             println!("  Price: ${}", price);
         }
         println!("  Commission: ${:?}", trade.commission);

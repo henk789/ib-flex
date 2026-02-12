@@ -344,7 +344,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     side,
                     trade.symbol,
                     trade.quantity.unwrap_or_default(),
-                    trade.price.unwrap_or_default(),
+                    trade.trade_price.unwrap_or_default(),
                     trade.fifo_pnl_realized.unwrap_or_default()
                 );
             }
@@ -362,7 +362,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     side,
                     trade.symbol,
                     trade.quantity.unwrap_or_default(),
-                    trade.price.unwrap_or_default(),
+                    trade.trade_price.unwrap_or_default(),
                     trade.fifo_pnl_realized.unwrap_or_default()
                 );
             }
