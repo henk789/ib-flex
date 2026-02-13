@@ -1540,6 +1540,7 @@ impl Position {
 /// ```no_run
 /// use ib_flex::parse_activity_flex;
 /// use rust_decimal::Decimal;
+/// use ib_flex::types::CashTransactionType;
 ///
 /// let xml = std::fs::read_to_string("activity.xml")?;
 /// let statement = parse_activity_flex(&xml)?;
@@ -1550,18 +1551,18 @@ impl Position {
 /// let mut fees = Decimal::ZERO;
 ///
 /// for cash_txn in &statement.cash_transactions.items {
-///     match cash_txn.transaction_type.as_deref() {
-///         Some("Dividends") => {
+///     match cash_txn.transaction_type {
+///         Some(CashTransactionType::Dividends) => {
 ///             dividends += cash_txn.amount;
 ///             println!("Dividend from {}: {}",
 ///                 cash_txn.symbol.as_ref().unwrap_or(&"N/A".to_string()),
 ///                 cash_txn.amount
 ///             );
 ///         }
-///         Some("Broker Interest Paid") | Some("Broker Interest Received") => {
+///         Some(CashTransactionType::BrokerInterestPaid) | Some(CashTransactionType::BrokerInterestReceived) => {
 ///             interest += cash_txn.amount;
 ///         }
-///         Some("Other Fees") | Some("Commission Adjustments") => {
+///         Some(CashTransactionType::OtherFees) | Some(CashTransactionType::CommissionAdjustments) => {
 ///             fees += cash_txn.amount;
 ///         }
 ///         _ => {
@@ -1593,7 +1594,7 @@ pub struct CashTransaction {
     // --- Transaction Details ---
     /// Transaction type (Deposits, Dividends, WithholdingTax, BrokerInterest, etc.)
     #[serde(rename = "@type", default)]
-    pub transaction_type: Option<String>,
+    pub transaction_type: Option<super::common::CashTransactionType>,
 
     /// Description of transaction
     #[serde(rename = "@description", default)]
@@ -1834,6 +1835,7 @@ pub struct CashTransaction {
 /// # Example
 /// ```no_run
 /// use ib_flex::parse_activity_flex;
+/// use ib_flex::types::CorporateActionType;
 ///
 /// let xml = std::fs::read_to_string("activity.xml")?;
 /// let statement = parse_activity_flex(&xml)?;
@@ -1843,13 +1845,13 @@ pub struct CashTransaction {
 ///     println!("  Type: {:?}", action.action_type);
 ///
 ///     // Check action type
-///     match action.action_type.as_deref() {
-///         Some("FS") => println!("  Forward stock split"),
-///         Some("RS") => println!("  Reverse stock split"),
-///         Some("SO") => println!("  Spinoff"),
-///         Some("TO") => println!("  Tender offer"),
-///         Some("TC") => println!("  Treasury bill/bond maturity"),
-///         Some("BC") => println!("  Bond conversion"),
+///     match action.action_type {
+///         Some(CorporateActionType::StockSplit) => println!("  Forward stock split"),
+///         Some(CorporateActionType::ReverseSplit) => println!("  Reverse stock split"),
+///         Some(CorporateActionType::Spinoff) => println!("  Spinoff"),
+///         Some(CorporateActionType::Tender) => println!("  Tender offer"),
+///         Some(CorporateActionType::Merger) => println!("  Merger"),
+///         Some(CorporateActionType::BondConversion) => println!("  Bond conversion"),
 ///         _ => println!("  Other: {:?}", action.action_type),
 ///     }
 ///
@@ -1885,7 +1887,7 @@ pub struct CorporateAction {
     // --- Action Details ---
     /// Action type (Split, Merger, Spinoff, etc.)
     #[serde(rename = "@type", default)]
-    pub action_type: Option<String>,
+    pub action_type: Option<super::common::CorporateActionType>,
 
     /// Description of corporate action
     #[serde(rename = "@description", default)]

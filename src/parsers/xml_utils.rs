@@ -20,7 +20,15 @@ where
                 .split(';')
                 .filter(|code| !code.is_empty())
                 .map(|code| {
-                    serde_plain::from_str::<TransactionCode>(code).map_err(serde::de::Error::custom)
+                    let tc = serde_plain::from_str::<TransactionCode>(code)
+                        .map_err(serde::de::Error::custom)?;
+                    if tc == TransactionCode::Unknown {
+                        eprintln!(
+                            "WARNING: Unknown TransactionCode '{}' in notes '{}'",
+                            code, s
+                        );
+                    }
+                    Ok(tc)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
             Ok(Some(codes))

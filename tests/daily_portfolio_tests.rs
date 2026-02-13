@@ -4,6 +4,7 @@
 //! including positions, trades, cash flows, and multi-currency support.
 
 use ib_flex::parse_activity_flex;
+use ib_flex::types::{CashTransactionType, CorporateActionType};
 use ib_flex::{AssetCategory, BuySell};
 use rust_decimal::Decimal;
 use std::str::FromStr;
@@ -234,7 +235,7 @@ fn test_cash_transactions() {
     // Dividend
     let dividend = cash
         .iter()
-        .find(|c| c.transaction_type.as_deref() == Some("Dividends"))
+        .find(|c| c.transaction_type == Some(CashTransactionType::Dividends))
         .unwrap();
     assert_eq!(dividend.symbol.as_deref(), Some("AAPL"));
     assert_eq!(dividend.amount, Decimal::from_str("125.00").unwrap());
@@ -242,14 +243,14 @@ fn test_cash_transactions() {
     // Withholding tax
     let tax = cash
         .iter()
-        .find(|c| c.transaction_type.as_deref() == Some("Withholding Tax"))
+        .find(|c| c.transaction_type == Some(CashTransactionType::WithholdingTax))
         .unwrap();
     assert_eq!(tax.amount, Decimal::from_str("-18.75").unwrap());
 
     // Interest
     let interest = cash
         .iter()
-        .find(|c| c.transaction_type.as_deref() == Some("Broker Interest Paid"))
+        .find(|c| c.transaction_type == Some(CashTransactionType::BrokerInterestPaid))
         .unwrap();
     assert!(interest.amount < Decimal::ZERO);
 }
@@ -265,12 +266,7 @@ fn test_cash_flow_summary() {
     // Total dividends
     let dividends: Decimal = cash
         .iter()
-        .filter(|c| {
-            c.transaction_type
-                .as_ref()
-                .map(|t| t.contains("Dividend"))
-                .unwrap_or(false)
-        })
+        .filter(|c| matches!(c.transaction_type, Some(CashTransactionType::Dividends)))
         .map(|c| c.amount)
         .sum();
     assert_eq!(dividends, Decimal::from_str("125.00").unwrap());
@@ -279,10 +275,10 @@ fn test_cash_flow_summary() {
     let taxes: Decimal = cash
         .iter()
         .filter(|c| {
-            c.transaction_type
-                .as_ref()
-                .map(|t| t.contains("Tax"))
-                .unwrap_or(false)
+            matches!(
+                c.transaction_type,
+                Some(CashTransactionType::WithholdingTax)
+            )
         })
         .map(|c| c.amount)
         .sum();
@@ -300,7 +296,7 @@ fn test_corporate_actions() {
 
     let split = &actions[0];
     assert_eq!(split.symbol, "XYZ");
-    assert_eq!(split.action_type, Some("FS".to_string())); // Forward Split
+    assert_eq!(split.action_type, Some(CorporateActionType::StockSplit)); // Forward Split
     assert_eq!(split.quantity, Some(Decimal::from(100)));
 }
 

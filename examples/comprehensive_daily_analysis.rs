@@ -26,6 +26,7 @@
 //! cargo run --example comprehensive_daily_analysis
 //! ```
 
+use ib_flex::types::CashTransactionType;
 use ib_flex::{parse_activity_flex_all, AssetCategory, BuySell};
 use rust_decimal::Decimal;
 use std::collections::HashMap;
@@ -421,7 +422,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for txn in &all_cash_txns {
             let txn_type = txn
                 .transaction_type
-                .clone()
+                .as_ref()
+                .map(|t| format!("{:?}", t))
                 .unwrap_or_else(|| "Unknown".to_string());
             let entry = by_type.entry(txn_type).or_insert((0, Decimal::ZERO));
             entry.0 += 1;
@@ -441,10 +443,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let dividends: Decimal = all_cash_txns
             .iter()
             .filter(|t| {
-                t.transaction_type
-                    .as_ref()
-                    .map(|s| s.contains("Dividend"))
-                    .unwrap_or(false)
+                matches!(
+                    t.transaction_type,
+                    Some(CashTransactionType::Dividends)
+                        | Some(CashTransactionType::PaymentInLieuOfDividends)
+                )
             })
             .map(|t| t.amount)
             .sum();
@@ -452,10 +455,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let withholding: Decimal = all_cash_txns
             .iter()
             .filter(|t| {
-                t.transaction_type
-                    .as_ref()
-                    .map(|s| s.contains("Withholding"))
-                    .unwrap_or(false)
+                matches!(
+                    t.transaction_type,
+                    Some(CashTransactionType::WithholdingTax)
+                )
             })
             .map(|t| t.amount)
             .sum();
@@ -463,10 +466,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let interest: Decimal = all_cash_txns
             .iter()
             .filter(|t| {
-                t.transaction_type
-                    .as_ref()
-                    .map(|s| s.contains("Interest"))
-                    .unwrap_or(false)
+                matches!(
+                    t.transaction_type,
+                    Some(CashTransactionType::BrokerInterestPaid)
+                        | Some(CashTransactionType::BrokerInterestReceived)
+                        | Some(CashTransactionType::BondInterestPaid)
+                        | Some(CashTransactionType::BondInterestReceived)
+                )
             })
             .map(|t| t.amount)
             .sum();
@@ -474,10 +480,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let fees: Decimal = all_cash_txns
             .iter()
             .filter(|t| {
-                t.transaction_type
-                    .as_ref()
-                    .map(|s| s.contains("Fee") || s.contains("Commission"))
-                    .unwrap_or(false)
+                matches!(
+                    t.transaction_type,
+                    Some(CashTransactionType::OtherFees)
+                        | Some(CashTransactionType::CommissionAdjustments)
+                        | Some(CashTransactionType::AdvisorFees)
+                )
             })
             .map(|t| t.amount)
             .sum();
@@ -512,7 +520,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for action in &all_corp_actions {
             let action_type = action
                 .action_type
-                .clone()
+                .as_ref()
+                .map(|t| format!("{:?}", t))
                 .unwrap_or_else(|| "Unknown".to_string());
             *by_type.entry(action_type).or_insert(0) += 1;
         }
@@ -529,7 +538,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if all_corp_actions.len() <= 20 {
             println!("All Corporate Actions:");
             for action in &all_corp_actions {
-                let action_type_str = action.action_type.as_deref().unwrap_or("N/A");
+                let action_type_str = action
+                    .action_type
+                    .as_ref()
+                    .map(|t| format!("{:?}", t))
+                    .unwrap_or_else(|| "N/A".to_string());
                 println!(
                     "  {} {:12} - {:30} Qty: {:>10}",
                     action.report_date,
@@ -541,7 +554,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
             println!("Sample Corporate Actions (first 20):");
             for action in all_corp_actions.iter().take(20) {
-                let action_type_str = action.action_type.as_deref().unwrap_or("N/A");
+                let action_type_str = action
+                    .action_type
+                    .as_ref()
+                    .map(|t| format!("{:?}", t))
+                    .unwrap_or_else(|| "N/A".to_string());
                 println!(
                     "  {} {:12} - {:30} Qty: {:>10}",
                     action.report_date,

@@ -279,6 +279,7 @@ pub enum CashTransactionType {
     Dividends,
 
     /// Withholding tax
+    #[serde(rename = "Withholding Tax")]
     WithholdingTax,
 
     /// Broker interest paid
@@ -339,7 +340,7 @@ pub enum CashTransactionType {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
 pub enum CorporateActionType {
     /// Stock split (forward split)
-    #[serde(rename = "Stock Split")]
+    #[serde(rename = "FS", alias = "Stock Split")]
     StockSplit,
 
     /// Forward split (issue)
@@ -351,13 +352,15 @@ pub enum CorporateActionType {
     ForwardSplit,
 
     /// Reverse split
-    #[serde(rename = "Reverse Split")]
+    #[serde(rename = "RS", alias = "Reverse Split")]
     ReverseSplit,
 
     /// Merger
+    #[serde(rename = "TC", alias = "Merger")]
     Merger,
 
     /// Spinoff
+    #[serde(rename = "SO", alias = "Spinoff")]
     Spinoff,
 
     /// Contract spinoff
@@ -365,15 +368,15 @@ pub enum CorporateActionType {
     ContractSpinoff,
 
     /// Stock dividend
-    #[serde(rename = "Stock Dividend")]
+    #[serde(rename = "SD", alias = "Stock Dividend")]
     StockDividend,
 
     /// Cash dividend
-    #[serde(rename = "Cash Dividend")]
+    #[serde(rename = "DI", alias = "Cash Dividend")]
     CashDividend,
 
     /// Choice dividend
-    #[serde(rename = "Choice Dividend")]
+    #[serde(rename = "CD", alias = "Choice Dividend")]
     ChoiceDividend,
 
     /// Choice dividend (delivery)
@@ -393,10 +396,11 @@ pub enum CorporateActionType {
     ExpiredDivRight,
 
     /// Delisted
+    #[serde(rename = "DL", alias = "Delisted")]
     Delisted,
 
     /// Delist (worthless)
-    #[serde(rename = "Delist (Worthless)")]
+    #[serde(rename = "DW", alias = "Delist (Worthless)")]
     DelistWorthless,
 
     /// Name change
@@ -412,11 +416,11 @@ pub enum CorporateActionType {
     IssueChange,
 
     /// Bond conversion
-    #[serde(rename = "Bond Conversion")]
+    #[serde(rename = "BC", alias = "Bond Conversion")]
     BondConversion,
 
     /// Bond maturity
-    #[serde(rename = "Bond Maturity")]
+    #[serde(rename = "BM", alias = "Bond Maturity")]
     BondMaturity,
 
     /// T-Bill maturity
@@ -428,7 +432,7 @@ pub enum CorporateActionType {
     ConvertibleIssue,
 
     /// Coupon payment
-    #[serde(rename = "Coupon Payment")]
+    #[serde(rename = "CP", alias = "Coupon Payment")]
     CouponPayment,
 
     /// Contract consolidation
@@ -448,14 +452,15 @@ pub enum CorporateActionType {
     FeeAllocation,
 
     /// Rights issue
-    #[serde(rename = "Rights Issue")]
+    #[serde(rename = "RI", alias = "Rights Issue")]
     RightsIssue,
 
     /// Subscribe rights
-    #[serde(rename = "Subscribe Rights")]
+    #[serde(rename = "SR", alias = "Subscribe Rights")]
     SubscribeRights,
 
     /// Tender
+    #[serde(rename = "TO", alias = "Tender")]
     Tender,
 
     /// Tender (issue)
@@ -610,13 +615,19 @@ pub enum TransactionCode {
     #[serde(rename = "Et")]
     Etf,
 
-    /// Expired - From expired position (option/warrant expiry)
-    #[serde(rename = "Ex")]
-    Expired,
+    /// Expired Position - Resulting from an expired position
+    #[serde(rename = "Ep")]
+    ExpiredPosition,
 
     /// Exercise - Option exercise (long option exercised)
-    #[serde(rename = "O")]
+    /// Source: https://guides.interactivebrokers.com/reportingguide/reportguide/activity_flex_query_notes.htm
+    #[serde(rename = "Ex")]
     Exercise,
+
+    /// Opening - Opening trade (new position)
+    /// Source: https://guides.interactivebrokers.com/reportingguide/reportguide/activity_flex_query_notes.htm
+    #[serde(rename = "O")]
+    Opening,
 
     /// Guaranteed - Guaranteed account segment (special margin)
     #[serde(rename = "G")]
@@ -639,7 +650,7 @@ pub enum TransactionCode {
     InternalTransfer,
 
     /// Affiliate - Affiliate execution (related party trade)
-    #[serde(rename = "Ia")]
+    #[serde(rename = "Ia", alias = "IA")]
     Affiliate,
 
     /// Investor - Investment from investor (capital contribution)
@@ -686,12 +697,9 @@ pub enum TransactionCode {
     #[serde(rename = "Mx")]
     ManualExercise,
 
-    /// Opening - Opening trade (new position)
-    #[serde(rename = "P")]
-    Opening,
-
     /// Partial - Partial execution (partial fill)
-    #[serde(rename = "Pt")]
+    /// Source: https://guides.interactivebrokers.com/reportingguide/reportguide/activity_flex_query_notes.htm
+    #[serde(rename = "P", alias = "Pt")]
     Partial,
 
     /// Frac Riskless - Fractional riskless principal (fractional share method)

@@ -15,6 +15,7 @@
 
 use chrono::{Duration, NaiveDate};
 use ib_flex::parse_activity_flex_all;
+use ib_flex::types::CashTransactionType;
 use rust_decimal::Decimal;
 use std::collections::HashMap;
 use std::env;
@@ -454,17 +455,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
 
-            match cash_txn.transaction_type.as_deref() {
-                Some("Dividends") | Some("Payment In Lieu Of Dividends") => {
+            match cash_txn.transaction_type {
+                Some(CashTransactionType::Dividends)
+                | Some(CashTransactionType::PaymentInLieuOfDividends) => {
                     total_dividends += cash_txn.amount;
                 }
-                Some("Withholding Tax") => {
+                Some(CashTransactionType::WithholdingTax) => {
                     total_withholding += cash_txn.amount; // Usually negative
                 }
-                Some("Broker Interest Received") | Some("Bond Interest Received") => {
+                Some(CashTransactionType::BrokerInterestReceived)
+                | Some(CashTransactionType::BondInterestReceived) => {
                     total_interest += cash_txn.amount;
                 }
-                Some("Broker Interest Paid") => {
+                Some(CashTransactionType::BrokerInterestPaid) => {
                     total_interest += cash_txn.amount; // Usually negative
                 }
                 _ => {}
