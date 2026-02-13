@@ -2250,6 +2250,10 @@ pub struct StatementOfFundsLine {
     #[serde(rename = "@activityDescription", default)]
     pub activity_description: Option<String>,
 
+    /// Transaction ID
+    #[serde(rename = "@transactionID", default)]
+    pub transaction_id: Option<String>,
+
     /// Trade ID
     #[serde(rename = "@tradeID", default)]
     pub trade_id: Option<String>,
@@ -2257,6 +2261,10 @@ pub struct StatementOfFundsLine {
     /// Symbol
     #[serde(rename = "@symbol", default)]
     pub symbol: Option<String>,
+
+    /// Description
+    #[serde(rename = "@description", default)]
+    pub description: Option<String>,
 
     /// Contract ID
     #[serde(rename = "@conid", default)]
