@@ -2258,6 +2258,10 @@ pub struct StatementOfFundsLine {
     #[serde(rename = "@symbol", default)]
     pub symbol: Option<String>,
 
+    /// Description
+    #[serde(rename = "@description", default)]
+    pub description: Option<String>,
+
     /// Contract ID
     #[serde(rename = "@conid", default)]
     pub conid: Option<String>,
